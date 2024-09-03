@@ -23,7 +23,7 @@ A React application built with TypeScript and Vite, featuring search functionali
 1. Clone the repository:
 
    ```
-   git clone https://github.com/your-username/search-app.git
+   git clone https://github.com/pawelksiazczyk/challenge-search-app.git
    cd search-app
    ```
 
