@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { useSearchParamsState } from '../hooks/common/useSearchParamsState'
+import { useSearchParamsState } from '@/hooks/common/useSearchParamsState'
 
 const CustomNavLink = ({
   to,
@@ -12,7 +12,7 @@ const CustomNavLink = ({
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `w-1/2 text-center bg-blue-300 p-4 text-white ${
+        `w-1/2 text-center bg-blue-400 p-4 text-white ${
           isActive ? 'font-bold bg-blue-600' : 'text-gray-700'
         }`
       }

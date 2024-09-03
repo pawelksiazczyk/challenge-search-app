@@ -1,9 +1,9 @@
-import { ITEMS_PER_PAGE } from '../constants'
-import { useGetPosts } from '../hooks/posts/useGetPosts'
-import ErrorMessage from './common/ErrorMessage'
-import LoadingMessage from './common/LoadingMessage'
-import NoResultsMessage from './common/NoResultsMessage'
-import Pagination from './Pagination'
+import { ITEMS_PER_PAGE } from '@/constants'
+import { useGetPosts } from '@/hooks/posts/useGetPosts'
+import ErrorMessage from '@/components/common/ErrorMessage'
+import LoadingMessage from '@/components/common/LoadingMessage'
+import NoResultsMessage from '@/components/common/NoResultsMessage'
+import Pagination from '@/components/Pagination'
 
 interface PostsListProps {
   searchQuery: string
@@ -21,6 +21,7 @@ const PostsList = ({
   const { data, error, isLoading } = useGetPosts({
     start,
     limit: ITEMS_PER_PAGE,
+    searchQuery,
   })
 
   const posts = data?.posts ?? []
@@ -30,19 +31,14 @@ const PostsList = ({
   if (isLoading) return <LoadingMessage />
   if (error) return <ErrorMessage error={error} />
 
-  const filteredPosts =
-    posts?.filter((post) =>
-      post?.title?.toLowerCase().includes(searchQuery.toLowerCase())
-    ) ?? []
-
-  if (filteredPosts.length === 0) {
+  if (posts.length === 0) {
     return <NoResultsMessage searchQuery={searchQuery} itemType="posts" />
   }
 
   return (
     <>
-      <ul className="list-none pl-5">
-        {filteredPosts.map((post) => (
+      <ul className="list-none pl-5 flex-grow">
+        {posts.map((post) => (
           <li key={post.id} className="border-b border-gray-300 p-4">
             {post.title}
           </li>
@@ -50,7 +46,7 @@ const PostsList = ({
       </ul>
 
       {totalPages > 1 && (
-        <div className="my-8">
+        <div className="my-10">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

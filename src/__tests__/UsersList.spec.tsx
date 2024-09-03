@@ -1,68 +1,84 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import UsersList from "../components/UserList";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import UsersList from '@/components/UserList'
+import { describe, expect, it, vi } from 'vitest'
+import { useGetUsers } from '@/hooks/users/useGetUsers'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
-vi.mock("../hooks/users/useGetUsers", () => ({
-  useGetUsers: () => ({
-    data: [
-      { id: 1, name: "John Doe" },
-      { id: 2, name: "Jane Smith" },
-    ],
-    error: null,
-    isLoading: false,
-  }),
-}));
+vi.mock('@/hooks/users/useGetUsers', () => ({
+  useGetUsers: vi.fn(),
+}))
 
-describe("UsersList", () => {
-  it("renders correctly when data is loading", () => {
-    vi.mock("../hooks/users/useGetUsers", () => ({
-      useGetUsers: () => ({
-        data: null,
-        error: null,
-        isLoading: true,
-      }),
-    }));
+describe('UsersList', () => {
+  it('renders loading state', () => {
+    vi.mocked(useGetUsers).mockReturnValue({
+      data: undefined,
+      error: null,
+      isLoading: true,
+    } as any)
 
     render(
       <QueryClientProvider client={queryClient}>
-        <UsersList searchQuery="" />
+        <UsersList searchQuery="" currentPage={1} onPageChange={() => {}} />
       </QueryClientProvider>
-    );
+    )
 
-    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
-  });
+    expect(screen.getByText(/Loading.../i)).toBeInTheDocument()
+  })
 
-  it("displays an error message when data fetching fails", () => {
-    vi.mock("../hooks/users/useGetUsers", () => ({
-      useGetUsers: () => ({
-        data: null,
-        error: { message: "Failed to fetch" },
-        isLoading: false,
-      }),
-    }));
+  it('renders error state', () => {
+    vi.mocked(useGetUsers).mockReturnValue({
+      data: undefined,
+      error: new Error('Failed to fetch'),
+      isLoading: false,
+    } as any)
 
     render(
       <QueryClientProvider client={queryClient}>
-        <UsersList searchQuery="" />
+        <UsersList searchQuery="" currentPage={1} onPageChange={() => {}} />
       </QueryClientProvider>
-    );
+    )
 
-    expect(screen.getByText(/Error: Failed to fetch/i)).toBeInTheDocument();
-  });
+    expect(screen.getByText(/Error: Failed to fetch/i)).toBeInTheDocument()
+  })
 
-  it("filters and displays users based on the search query", async () => {
+  it('renders users', () => {
+    vi.mocked(useGetUsers).mockReturnValue({
+      data: {
+        users: [
+          { id: 1, name: 'User 1' },
+          { id: 2, name: 'User 2' },
+        ],
+        total: 2,
+      },
+      error: null,
+      isLoading: false,
+    } as any)
+
     render(
       <QueryClientProvider client={queryClient}>
-        <UsersList searchQuery="Jane" />
+        <UsersList searchQuery="" currentPage={1} onPageChange={() => {}} />
       </QueryClientProvider>
-    );
+    )
 
-    await waitFor(() => {
-      expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument();
-      expect(screen.queryByText(/John Doe/i)).toBeNull();
-    });
-  });
-});
+    expect(screen.getByText('User 1')).toBeInTheDocument()
+    expect(screen.getByText('User 2')).toBeInTheDocument()
+  })
+
+  it('renders no results message', () => {
+    vi.mocked(useGetUsers).mockReturnValue({
+      data: { users: [], total: 0 },
+      error: null,
+      isLoading: false,
+    } as any)
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <UsersList searchQuery="test" currentPage={1} onPageChange={() => {}} />
+      </QueryClientProvider>
+    )
+
+    expect(screen.getByText(/No users found for "test"/i)).toBeInTheDocument()
+  })
+})

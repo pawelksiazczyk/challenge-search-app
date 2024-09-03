@@ -1,4 +1,5 @@
-import React from 'react'
+import { PAGES_EITHER_SIDE, PAGES_TO_SHOW } from '@/constants'
+import { useMemo } from 'react'
 
 interface PaginationProps {
   currentPage: number
@@ -6,26 +7,28 @@ interface PaginationProps {
   onPageChange: (page: number) => void
 }
 
-const Pagination: React.FC<PaginationProps> = ({
+const Pagination = ({
   currentPage,
   totalPages,
   onPageChange,
-}) => {
-  const pageNumbers = []
-  let startPage = Math.max(1, currentPage - 2)
-  let endPage = Math.min(totalPages, startPage + 4)
+}: PaginationProps) => {
+  const pageNumbers = useMemo(() => {
+    let startPage = Math.max(1, currentPage - PAGES_EITHER_SIDE)
+    let endPage = Math.min(totalPages, startPage + PAGES_TO_SHOW - 1)
 
-  if (endPage - startPage < 4) {
-    startPage = Math.max(1, endPage - 4)
-  }
+    if (endPage - startPage + 1 < PAGES_TO_SHOW) {
+      startPage = Math.max(1, endPage - PAGES_TO_SHOW + 1)
+    }
 
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i)
-  }
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, i) => startPage + i
+    )
+  }, [currentPage, totalPages])
 
   return (
-    <nav className="flex justify-center mt-4">
-      <ul className="flex items-center">
+    <nav className="mt-auto">
+      <ul className="flex items-center justify-center">
         <li>
           <button
             onClick={() => onPageChange(Math.max(1, currentPage - 1))}

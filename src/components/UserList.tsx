@@ -1,9 +1,9 @@
-import { ITEMS_PER_PAGE } from '../constants'
-import { useGetUsers } from '../hooks/users/useGetUsers'
-import ErrorMessage from './common/ErrorMessage'
-import LoadingMessage from './common/LoadingMessage'
-import NoResultsMessage from './common/NoResultsMessage'
-import Pagination from './Pagination'
+import { ITEMS_PER_PAGE } from '@/constants'
+import { useGetUsers } from '@/hooks/users/useGetUsers'
+import ErrorMessage from '@/components/common/ErrorMessage'
+import LoadingMessage from '@/components/common/LoadingMessage'
+import NoResultsMessage from '@/components/common/NoResultsMessage'
+import Pagination from '@/components//Pagination'
 
 interface UsersListProps {
   searchQuery: string
@@ -21,6 +21,7 @@ const UsersList = ({
   const { data, error, isLoading } = useGetUsers({
     start,
     limit: ITEMS_PER_PAGE,
+    searchQuery,
   })
 
   const users = data?.users ?? []
@@ -30,19 +31,14 @@ const UsersList = ({
   if (isLoading) return <LoadingMessage />
   if (error) return <ErrorMessage error={error} />
 
-  const filteredUsers =
-    users?.filter((user) =>
-      user?.name?.toLowerCase().includes(searchQuery.toLowerCase())
-    ) ?? []
-
-  if (filteredUsers.length === 0) {
+  if (users.length === 0) {
     return <NoResultsMessage searchQuery={searchQuery} itemType="users" />
   }
 
   return (
     <>
-      <ul className="list-none pl-5">
-        {filteredUsers.map((user) => (
+      <ul className="list-none pl-5 flex-grow">
+        {users.map((user) => (
           <li
             key={user.id}
             className="flex space-x-3 items-center gap-4 border-b border-gray-300 p-3"
@@ -54,7 +50,7 @@ const UsersList = ({
       </ul>
 
       {totalPages > 1 && (
-        <div className="my-8">
+        <div className="my-10">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

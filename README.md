@@ -1,50 +1,103 @@
-# React + TypeScript + Vite
+# Search App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application built with TypeScript and Vite, featuring search functionality for users and posts.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Search for users and posts
+- Pagination with customizable page size
+- Responsive design using Tailwind CSS
+- Efficient data fetching and caching with React Query
+- Client-side routing with React Router
+- Comprehensive test suite using Vitest and React Testing Library
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Prerequisites
 
-- Configure the top-level `parserOptions` property like this:
+- Node.js (version 18 or later recommended)
+- npm or yarn
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Installation
+
+1. Clone the repository:
+
+   ```
+   git clone https://github.com/your-username/search-app.git
+   cd search-app
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   ```
+   or
+   ```
+   yarn install
+   ```
+
+### Environment Variables
+
+This project requires the following environment variable to be set:
+
+- `VITE_API_BASE_URL`: The base URL for the API
+
+Before running the app, create a `.env` file in the root directory of the project and add the following line:
+
+```
+VITE_API_BASE_URL=https://jsonplaceholder.typicode.com
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Note: The `.env` file is ignored by git to keep sensitive information out
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Running the App
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+Start the development server:
+
+```
+npm run dev
+```
+
+or
+
+```
+yarn dev
+```
+
+The app will be available at `http://localhost:5173`.
+
+## Available Scripts
+
+- `dev`: Start the development server
+- `build`: Build the production-ready app
+- `lint`: Run ESLint
+- `preview`: Preview the built app
+- `test`: Run tests
+- `test:watch`: Run tests in watch mode
+- `test:coverage`: Run tests with coverage report
+
+## Testing
+
+Run tests with:
+
+```
+npm run test
+```
+
+or
+
+```
+yarn test
+```
+
+For test coverage:
+
+```
+npm run test:coverage
+```
+
+or
+
+```
+yarn test:coverage
 ```

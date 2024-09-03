@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
-import Header from '../components/Header'
+import Header from '@/components/Header'
 import { describe, expect, it, vi } from 'vitest'
-import SearchBar from '../components/common/SearchBar'
+import SearchBar from '@/components/common/SearchBar'
 
 describe('Header', () => {
   it('renders correctly with SearchBar', () => {

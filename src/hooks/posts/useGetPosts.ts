@@ -1,6 +1,6 @@
+import { API_BASE_URL } from '@/config'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 import axios from 'axios'
-import { API_BASE_URL } from '../../constants'
 
 interface Post {
   id: number
@@ -10,6 +10,7 @@ interface Post {
 interface PaginationProps {
   start: number
   limit: number
+  searchQuery: string
 }
 
 interface GetPostsResponse {
@@ -20,11 +21,13 @@ interface GetPostsResponse {
 const fetchPosts = async ({
   start,
   limit,
+  searchQuery,
 }: PaginationProps): Promise<GetPostsResponse> => {
   const { data, headers } = await axios.get(`${API_BASE_URL}/posts`, {
     params: {
       _start: start,
       _limit: limit,
+      title_like: searchQuery,
     },
   })
 

@@ -1,5 +1,5 @@
-import UsersList from '../components/UserList'
-import PageLayout from '../layouts/PageLayout'
+import UsersList from '@/components/UserList'
+import PageLayout from '@/layouts/PageLayout'
 
 const UsersPage = () => <PageLayout ListComponent={UsersList} />
 

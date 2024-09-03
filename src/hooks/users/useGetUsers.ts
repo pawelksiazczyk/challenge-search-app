@@ -1,6 +1,6 @@
+import { API_BASE_URL } from '@/config'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 import axios from 'axios'
-import { API_BASE_URL } from '../../constants'
 
 interface User {
   id: number
@@ -10,6 +10,7 @@ interface User {
 interface PaginationProps {
   start: number
   limit: number
+  searchQuery: string
 }
 
 interface GetUsersResponse {
@@ -20,9 +21,10 @@ interface GetUsersResponse {
 const fetchUsers = async ({
   start,
   limit,
+  searchQuery,
 }: PaginationProps): Promise<GetUsersResponse> => {
   const { data, headers } = await axios.get(`${API_BASE_URL}/users`, {
-    params: { _start: start, _limit: limit },
+    params: { _start: start, _limit: limit, name_like: searchQuery },
   })
   const total = parseInt(headers['x-total-count'], 10)
   return { users: data, total }

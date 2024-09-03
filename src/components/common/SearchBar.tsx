@@ -10,7 +10,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   setSearchQuery,
 }) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
+    const trimmedValue = e.target.value.trimStart()
+    setSearchQuery(trimmedValue)
   }
 
   return (
@@ -19,7 +20,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       value={searchQuery}
       onChange={handleInputChange}
       placeholder="Search..."
-      className="mt-2 p-2 w-full border rounded-3xl text-black outline-none"
+      className="mt-2 py-2 px-4 w-full border rounded-3xl text-black outline-none"
     />
   )
 }

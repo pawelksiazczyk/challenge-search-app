@@ -1,68 +1,84 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import PostsList from "../components/PostsList";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import PostsList from '@/components/PostsList'
+import { describe, expect, it, vi } from 'vitest'
+import { useGetPosts } from '@/hooks/posts/useGetPosts'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
-vi.mock("../hooks/posts/useGetPosts", () => ({
-  useGetPosts: () => ({
-    data: [
-      { id: 1, title: "Post One" },
-      { id: 2, title: "Post Two" },
-    ],
-    error: null,
-    isLoading: false,
-  }),
-}));
+vi.mock('@/hooks/posts/useGetPosts', () => ({
+  useGetPosts: vi.fn(),
+}))
 
-describe("PostsList", () => {
-  it("renders correctly when data is loading", () => {
-    vi.mock("../hooks/posts/useGetPosts", () => ({
-      useGetPosts: () => ({
-        data: null,
-        error: null,
-        isLoading: true,
-      }),
-    }));
+describe('PostsList', () => {
+  it('renders loading state', () => {
+    vi.mocked(useGetPosts).mockReturnValue({
+      data: undefined,
+      error: null,
+      isLoading: true,
+    } as any)
 
     render(
       <QueryClientProvider client={queryClient}>
-        <PostsList searchQuery="" />
+        <PostsList searchQuery="" currentPage={1} onPageChange={() => {}} />
       </QueryClientProvider>
-    );
+    )
 
-    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
-  });
+    expect(screen.getByText(/Loading.../i)).toBeInTheDocument()
+  })
 
-  it("displays an error message when data fetching fails", () => {
-    vi.mock("../hooks/posts/useGetPosts", () => ({
-      useGetPosts: () => ({
-        data: null,
-        error: { message: "Failed to fetch" },
-        isLoading: false,
-      }),
-    }));
+  it('renders error state', () => {
+    vi.mocked(useGetPosts).mockReturnValue({
+      data: undefined,
+      error: new Error('Failed to fetch'),
+      isLoading: false,
+    } as any)
 
     render(
       <QueryClientProvider client={queryClient}>
-        <PostsList searchQuery="" />
+        <PostsList searchQuery="" currentPage={1} onPageChange={() => {}} />
       </QueryClientProvider>
-    );
+    )
 
-    expect(screen.getByText(/Error: Failed to fetch/i)).toBeInTheDocument();
-  });
+    expect(screen.getByText(/Error: Failed to fetch/i)).toBeInTheDocument()
+  })
 
-  it("filters and displays posts based on the search query", async () => {
+  it('renders posts', () => {
+    vi.mocked(useGetPosts).mockReturnValue({
+      data: {
+        posts: [
+          { id: 1, title: 'Post 1' },
+          { id: 2, title: 'Post 2' },
+        ],
+        total: 2,
+      },
+      error: null,
+      isLoading: false,
+    } as any)
+
     render(
       <QueryClientProvider client={queryClient}>
-        <PostsList searchQuery="Two" />
+        <PostsList searchQuery="" currentPage={1} onPageChange={() => {}} />
       </QueryClientProvider>
-    );
+    )
 
-    await waitFor(() => {
-      expect(screen.getByText(/Post Two/i)).toBeInTheDocument();
-      expect(screen.queryByText(/Post One/i)).toBeNull();
-    });
-  });
-});
+    expect(screen.getByText('Post 1')).toBeInTheDocument()
+    expect(screen.getByText('Post 2')).toBeInTheDocument()
+  })
+
+  it('renders no results message', () => {
+    vi.mocked(useGetPosts).mockReturnValue({
+      data: { posts: [], total: 0 },
+      error: null,
+      isLoading: false,
+    } as any)
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <PostsList searchQuery="test" currentPage={1} onPageChange={() => {}} />
+      </QueryClientProvider>
+    )
+
+    expect(screen.getByText(/No posts found for "test"/i)).toBeInTheDocument()
+  })
+})
