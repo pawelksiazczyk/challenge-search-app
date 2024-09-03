@@ -24,7 +24,7 @@ A React application built with TypeScript and Vite, featuring search functionali
 
    ```
    git clone https://github.com/pawelksiazczyk/challenge-search-app.git
-   cd search-app
+   cd challenge-search-app
    ```
 
 2. Install dependencies:
