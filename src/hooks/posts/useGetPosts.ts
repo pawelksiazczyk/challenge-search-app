@@ -1,11 +1,7 @@
 import { API_BASE_URL } from '@/config'
+import { Post } from '@/models/post'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 import axios from 'axios'
-
-interface Post {
-  id: number
-  title: string
-}
 
 interface PaginationProps {
   start: number
